@@ -1,0 +1,22 @@
+# Ambiente virtuale Python
+.venv/
+venv/
+env/
+
+# Dati pesanti e output (Ignora l'intera cartella data)
+data/
+*.ply
+*.las
+*.obj
+images.txt
+
+# Vecchi script e documenti di bozza
+archive/
+docs/
+
+# File di sistema e cache di Python
+__pycache__/
+*.py[cod]
+*$py.class
+.vscode/
+.DS_Store
