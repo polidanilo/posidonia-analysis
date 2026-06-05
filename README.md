@@ -104,8 +104,8 @@ Trasforma i dati geometrici in informazioni ecologicamente significative e verif
 | Metrica | Formula | Significato |
 |---|---|---|
 | Copertura Posidonia | area_pos / (area_pos + area_sabbia) × 100 | % del fondale ancora coperto |
-| Perdita CO₂ | area_pos × 0.0002 tC/m² × 3.6663 × 1000 | kg di CO₂/anno assorbita |
-| Perdita O₂ | area_pos × 3650 L/m²/anno | Litri di O₂/anno prodotti |
+| CO₂ Assorbita | area_pos × 0.0002 tC/m² × 3.6663 × 1000 | kg di CO₂/anno assorbita |
+| O₂ Prodotto | area_pos × 3650 L/m²/anno | Litri di O₂/anno prodotti |
 | Ratio Volume/Area | volume / area_posidonia | Altezza media effettiva della chioma |
 
 I coefficienti (0.0002 tC/m², 3650 L O₂/m²/anno) sono valori standard dalla letteratura scientifica su *Posidonia oceanica* (Fourqurean et al., 2012). Possono essere aggiornati in `config.json` se si dispone di dati rilevati direttamente sul sito. Prima di esportare il modulo esegue anche 4 controlli automatici sull'affidabilità dei risultati rilevati finora (verifica della calibrazione RANSAC, del rapporto Volume/Area, della copertura complessiva e della qualità del clustering).
