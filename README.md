@@ -8,8 +8,6 @@ Prende in input un rilievo fotogrammetrico 3D del fondale marino restituendo:
 
 Dalla cartella principale, basta fare doppio clic su **Avvia_Analisi.bat** (Windows) o **Avvia_Analisi.command** (Mac/Linux). Il sistema chiederà di selezionare la cartella o il file del rilievo e depositerà i risultati in `data/output/`.
 
----
-
 ## Struttura delle cartelle
 
 ```
@@ -41,8 +39,6 @@ posidonia_analysis/
 │   ├── test_scala.py          ← Verifica iniziale della scala usata in un modello 3D
 │   └── esporta_percorso.py    ← Estrazione traccia GPS da file .txt
 ```
-
----
 
 ## I file principali — Spiegazione modulo per modulo
 
@@ -148,6 +144,7 @@ Coordina l'esecuzione di tutti i moduli nell'ordine corretto, gestendo gli error
 [4/6] Calcolo area e volume
 [5/6] Metriche ecologiche e validazione biologica
 [6/6] Generazione report
+```
 
 ---
 
