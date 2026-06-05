@@ -40,6 +40,8 @@ posidonia_analysis/
 │   └── esporta_percorso.py    ← Estrazione traccia GPS da file .txt
 ```
 
+---
+
 ## I file principali — Spiegazione modulo per modulo
 
 ### `config.json` — Pannello di controllo
@@ -191,8 +193,6 @@ Integrare i punti GPS del percorso per ancorare il modello a coordinate reali.
 **Stima della biomassa fogliare:**
 Dal volume della chioma, usare la densità fogliare media da letteratura (~1.2 kg/m³ di materia secca per *Posidonia oceanica*) per stimare la biomassa totale.
 
----
-
 ## Dipendenze software
 
 \```
@@ -213,4 +213,4 @@ plotly
 pip install numpy scipy scikit-learn trimesh laspy matplotlib pandas openpyxl plotly
 \```
 
-Nota: open3d NON è richiesto. Il sistema usa il RANSAC di scikit-learn.
+**Nota:** open3d NON è richiesto. Il sistema usa il RANSAC di scikit-learn.
