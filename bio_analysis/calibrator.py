@@ -52,10 +52,10 @@ class PlaneCalibrator:
         denom = np.sqrt(a**2 + b**2 + c**2)
         distances = np.abs(a * vertices[:, 0] + b * vertices[:, 1] + c * vertices[:, 2] + d_plane) / denom
         
-        # 5. Troviamo il fattore di scala (usando il 98° percentile per ignorare rumore galleggiante)
+        # 5. Troviamo il fattore di scala (usando il 98° percentile)
         max_dist_arbitrary = np.percentile(distances, 98)
-        scale = 0.70 / max_dist_arbitrary
-        self.scale_factor = scale
+        scale = self.known_height / max_dist_arbitrary
+        self.scale_factor = scale  # <--- AGGIUNGI QUESTA RIGA!
         
         plane_info = {
             'equation': [a, b, c, d_plane],

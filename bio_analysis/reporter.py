@@ -352,6 +352,7 @@ class ReportGenerator:
         try:
             import plotly.graph_objects as go
             import plotly.express as px
+            import numpy as np
         except ImportError:
             logger.warning("plotly non installato - 3D visualization skipped")
             logger.warning("Installa con: pip install plotly")
@@ -407,7 +408,20 @@ class ReportGenerator:
                 altezze = altezze_grid
             
             # Posidonia (verde)
-            pos_mask = celle_valide & mask_posidonia
+            # Fix: Adattamento dinamico delle dimensioni (Broadcasting Safe)
+            
+            if np.shape(celle_valide) != np.shape(mask_posidonia):
+                if np.ndim(mask_posidonia) == 1:
+                    pos_mask = np.zeros_like(celle_valide, dtype=bool)
+                    pos_mask[celle_valide] = mask_posidonia
+                elif np.ndim(celle_valide) == 1:
+                    pos_mask = np.zeros_like(mask_posidonia, dtype=bool)
+                    pos_mask[mask_posidonia] = celle_valide
+                else:
+                    pos_mask = mask_posidonia
+            else:
+                pos_mask = celle_valide & mask_posidonia
+
             pos_x = xx[pos_mask]
             pos_z = zz[pos_mask]
             pos_alt = altezze[pos_mask]
@@ -428,7 +442,7 @@ class ReportGenerator:
             ))
             
             # Sabbia (giallo/rosso)
-            sabbia_mask = celle_valide & ~mask_posidonia
+            sabbia_mask = celle_valide & ~pos_mask
             sab_x = xx[sabbia_mask]
             sab_z = zz[sabbia_mask]
             sab_alt = altezze[sabbia_mask]

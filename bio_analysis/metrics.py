@@ -26,9 +26,17 @@ class EcologicalMetrics:
     COVERAGE_MAX_PCT = 95
     KMEANS_SILHOUETTE_THRESHOLD = 0.3
     
-    def __init__(self):
+    def __init__(self, config: dict = None):
         self.metrics = {}
         self.warnings = []
+        
+        # Carica parametri personalizzati se presenti nel config
+        config = config or {}
+        bio_params = config.get("parametri_biologici", {})
+        
+        self.CARBON_SINK_TC_PER_M2 = bio_params.get("co2_sequestrata_tc_m2", 0.0002)
+        self.O2_PRODUCTION_L_PER_M2 = bio_params.get("o2_prodotto_l_m2_anno", 3650)
+        self.VOLUME_AREA_RATIO_MIN = bio_params.get("ratio_volume_area_min_sano", 0.2)
         
     def compute(
         self,

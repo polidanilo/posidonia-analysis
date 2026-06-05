@@ -28,20 +28,25 @@ class AnalysisPipeline:
     Supporta workflow singolo (single OBJ) e tiled (multiple PLY/LAS merged).
     """
     
-    def __init__(self, output_dir: str = ".", cell_size: float = 0.10):
-        """
-        Args:
-            output_dir: Directory per report output
-            cell_size: Dimensione celle griglia (metri)
-        """
+    def __init__(self, output_dir: str = ".", cell_size: float = None, config: dict = None):
         self.output_dir = Path(output_dir)
-        self.cell_size = cell_size
+        self.config = config or {}
+        
+        # Lettura parametri dal config.json
+        tech_params = self.config.get("parametri_tecnici", {})
+        bio_params = self.config.get("parametri_biologici", {})
+        
+        # Imposta le grandezze dinamiche
+        self.cell_size = cell_size if cell_size is not None else tech_params.get("dimensione_cella_griglia_m", 0.10)
+        self.max_height = bio_params.get("altezza_max_posidonia_m", 0.70)
         
         self.loader = PointCloudLoader()
-        self.calibrator = PlaneCalibrator()
-        self.segmenter = PosidoniaSegmenter(cell_size=cell_size)
-        self.geometry = GeometryAnalyzer(cell_size=cell_size)
-        self.metrics_analyzer = EcologicalMetrics()
+        # Passiamo la nuova altezza al calibratore!
+        self.calibrator = PlaneCalibrator(known_height_m=self.max_height)
+        self.segmenter = PosidoniaSegmenter(cell_size=self.cell_size)
+        self.geometry = GeometryAnalyzer(cell_size=self.cell_size)
+        # Passiamo il config completo alle metriche
+        self.metrics_analyzer = EcologicalMetrics(config=self.config)
         self.reporter = ReportGenerator(output_dir=str(self.output_dir))
         
         self.results = None
@@ -94,7 +99,8 @@ class AnalysisPipeline:
             metrics, warnings = self.metrics_analyzer.compute(
                 area_pos, area_sab, volume,
                 seg_info['silhouette_score'],
-                plane_info['max_distance_post_scaling']
+                plane_info['max_distance_post_scaling'],
+                known_height=self.max_height
             )
             logger.info(f"   ✅ Metriche completate")
             
@@ -206,7 +212,8 @@ class AnalysisPipeline:
             metrics, warnings = self.metrics_analyzer.compute(
                 area_pos, area_sab, volume,
                 seg_info['silhouette_score'],
-                plane_info['max_distance_post_scaling']
+                plane_info['max_distance_post_scaling'],
+                known_height=self.max_height
             )
             logger.info(f"   ✅ Metriche completate")
             

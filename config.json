@@ -1,0 +1,12 @@
+{
+    "parametri_biologici": {
+        "altezza_max_posidonia_m": 0.70,
+        "ratio_volume_area_min_sano": 0.20,
+        "co2_sequestrata_tc_m2": 0.0002,
+        "o2_prodotto_l_m2_anno": 3650
+    },
+    "parametri_tecnici": {
+        "dimensione_cella_griglia_m": 0.10,
+        "campionamento_3d_punti_max": 50000
+    }
+}
