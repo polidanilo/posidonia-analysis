@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class PointCloudLoader:
-    """Carica file mesh 3D (LAS, PLY, OBJ) e estrae vertici + colori."""
+    """Carica file mesh 3D (LAS, PLY, OBJ) e estrae vertici e colori."""
     
     def __init__(self):
         self.vertices = None
@@ -23,17 +23,7 @@ class PointCloudLoader:
         
     def load(self, path: str) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Carica un singolo file PLY/OBJ.
-        
-        Args:
-            path: Percorso al file (PLY, OBJ, o LAS)
-        
-        Returns:
-            (vertices, colors): Array NumPy di vertici e colori
-        
-        Raises:
-            FileNotFoundError: Se file non esiste
-            ValueError: Se formato non riconosciuto
+        Carica un singolo file PLY/OBJ/LAS.
         """
         path = str(path)
         
@@ -51,16 +41,7 @@ class PointCloudLoader:
     
     def load_tiled_ply(self, folder: str) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Carica e fonde TUTTI i file PLY da una cartella (tiled).
-        
-        Args:
-            folder: Percorso della cartella con file .ply
-        
-        Returns:
-            (vertices_merged, colors_merged): Mesh unificata
-        
-        Raises:
-            FileNotFoundError: Se nessun file .ply trovato
+        Carica e fonde i frammenti PLY da una cartella.
         """
         ply_files = sorted(glob.glob(os.path.join(folder, '*.ply')))
         
@@ -74,7 +55,7 @@ class PointCloudLoader:
         
         for i, file_path in enumerate(ply_files):
             name = os.path.basename(file_path)
-            logger.info(f"  [{i+1}/{len(ply_files)}] Caricamento {name}...")
+            logger.info(f" [{i+1}/{len(ply_files)}] Caricamento {name}...")
             
             try:
                 vertices, colors = self._load_trimesh(file_path)
@@ -91,7 +72,7 @@ class PointCloudLoader:
         self.colors = np.vstack(all_colors)
         self.source_file = folder
         
-        logger.info(f"✅ Merge completato: {len(self.vertices):,} vertici totali")
+        logger.info(f"Merge completato: {len(self.vertices):,} vertici totali")
         
         return self.vertices, self.colors
     
@@ -100,11 +81,9 @@ class PointCloudLoader:
         mesh = trimesh.load(path, process=False)
         vertices = np.array(mesh.vertices, dtype=np.float32)
         
-        # Estrai colori se disponibili
         if hasattr(mesh.visual, 'vertex_colors') and len(mesh.visual.vertex_colors) > 0:
             colors = np.array(mesh.visual.vertex_colors, dtype=np.uint8)
         else:
-            # Colore grigio neutro come fallback
             colors = np.ones((len(vertices), 4), dtype=np.uint8) * 128
         
         self.vertices = vertices
@@ -113,7 +92,7 @@ class PointCloudLoader:
         return vertices, colors
     
     def _load_las(self, path: str) -> Tuple[np.ndarray, np.ndarray]:
-        """Carica LAS con laspy (installare se necessario)."""
+        """Carica LAS con laspy."""
         try:
             import laspy
         except ImportError:
@@ -122,7 +101,6 @@ class PointCloudLoader:
         las = laspy.read(path)
         vertices = np.vstack([las.x, las.y, las.z]).T.astype(np.float32)
         
-        # Estrai colori RGB se disponibili
         if hasattr(las, 'red') and hasattr(las, 'green') and hasattr(las, 'blue'):
             colors = np.vstack([las.red, las.green, las.blue, np.ones(len(las))*255]).T.astype(np.uint8)
         else:
